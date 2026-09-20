@@ -1,0 +1,23 @@
+{
+  "name": "unicode-font-fallback-audit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Unicode 字体回退链审计台：按字素簇分析字体覆盖，求解最短回退链并导出 CSS / JSON",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11"
+  }
+}

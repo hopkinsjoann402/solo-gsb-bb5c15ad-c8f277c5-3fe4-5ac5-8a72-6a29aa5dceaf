@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    image: unicode-font-fallback-audit
+    container_name: font-fallback-audit
+    ports:
+      # 宿主机 8080 -> 容器 80；访问 http://localhost:8080
+      - "8080:80"
+    restart: unless-stopped
