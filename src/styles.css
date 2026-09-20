@@ -1006,6 +1006,95 @@ code {
   color: var(--muted);
 }
 
+/* ---- 字体版本升级影响评估 ---- */
+.upgrade-panel {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel-2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upgrade-panel h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.upgrade-panel .alert {
+  margin-bottom: 0;
+}
+
+.upgrade-entry-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.upgrade-entry-label {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.upgrade-entry-select {
+  flex: 1;
+  min-width: 150px;
+  max-width: none;
+}
+
+.upgrade-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .upgrade-slots {
+    grid-template-columns: 1fr;
+  }
+}
+
+.upgrade-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.upgrade-slot.has-error {
+  border-color: rgba(248, 81, 73, 0.5);
+}
+
+.upgrade-slot-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.upgrade-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+}
+
+.upgrade-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.row-gained {
+  background: var(--ok-soft);
+}
+
 /* ---- 页脚 ---- */
 .app-footer {
   margin-top: 18px;

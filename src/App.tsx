@@ -31,6 +31,7 @@ import {
 } from './lib/scenarios';
 import { formatSfntTag, parseSfntFont, SfntParseError } from './lib/sfnt';
 import FontEditor from './components/FontEditor';
+import UpgradePanel from './components/UpgradePanel';
 import ScenarioEditor from './components/ScenarioEditor';
 import ResultsPanel from './components/ResultsPanel';
 import SetResultsPanel, { type ScenarioView } from './components/SetResultsPanel';
@@ -549,6 +550,15 @@ export default function App() {
             onToggleMeasured={setUseMeasured}
             onUploadFile={uploadFontFile}
             onClearFile={clearFontFile}
+          />
+
+          {/* 字体版本升级影响评估：入口位于字体编辑区下方，随文本/模式/活动场景/透明字符设置自动重算 */}
+          <UpgradePanel
+            fonts={fonts}
+            groups={solveGroups}
+            scenarios={patchScenarios}
+            mode={mode}
+            ignoreFormat={ignoreFormat}
           />
 
           <h2>
