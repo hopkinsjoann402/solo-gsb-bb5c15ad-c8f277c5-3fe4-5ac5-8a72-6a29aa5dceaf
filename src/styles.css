@@ -1707,3 +1707,218 @@ code {
   border-radius: 6px;
   background: var(--panel);
 }
+
+/* ---- 字体版本升级影响评估 ---- */
+.font-upgrade {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.upgrade-title {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+.upgrade-font-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.upgrade-select {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  max-width: 280px;
+}
+
+.upgrade-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.upgrade-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0 10px;
+}
+
+@media (max-width: 640px) {
+  .upgrade-slots {
+    grid-template-columns: 1fr;
+  }
+}
+
+.upgrade-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: 9px;
+  background: var(--panel-2);
+}
+
+.upgrade-slot.old {
+  border-left-color: var(--warn);
+}
+
+.upgrade-slot.new {
+  border-left-color: var(--ok);
+}
+
+.upgrade-slot.has-error {
+  border-color: var(--bad);
+}
+
+.upgrade-slot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.upgrade-slot-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.upgrade-slot-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.upgrade-stat-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+  .upgrade-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.upgrade-diff-box {
+  margin: 8px 0 12px;
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.upgrade-scenario-wrap {
+  margin: 10px 0;
+}
+
+.upgrade-scenario-table th,
+.upgrade-scenario-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.upgrade-scenario-table td:first-child,
+.upgrade-scenario-table th:first-child {
+  text-align: left;
+}
+
+.upgrade-occ-section {
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  padding: 8px 10px;
+}
+
+.upgrade-occ-summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.upgrade-occ-summary.ok {
+  color: var(--ok);
+}
+
+.upgrade-occ-summary.bad {
+  color: var(--bad);
+}
+
+.upgrade-occ-summary.muted {
+  color: var(--text);
+}
+
+.upgrade-occ-empty {
+  margin-top: 6px;
+}
+
+.upgrade-occ-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.upgrade-occ-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.upgrade-occ-row.gained {
+  border-left: 3px solid var(--ok);
+}
+
+.upgrade-occ-row.lost {
+  border-left: 3px solid var(--bad);
+}
+
+.upgrade-occ-row.unchanged {
+  border-left: 3px solid var(--muted);
+}
+
+.upgrade-occ-index {
+  color: var(--muted);
+  font-size: 11px;
+  min-width: 34px;
+}
+
+.upgrade-occ-scenario {
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 5px;
+  padding: 0 6px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upgrade-occ-text {
+  font-size: 13px;
+}
+
+.upgrade-occ-missing {
+  word-break: break-all;
+}

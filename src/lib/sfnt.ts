@@ -12,6 +12,8 @@
  *   https://learn.microsoft.com/en-us/typography/opentype/spec/cmap
  */
 
+import type { FontFileInfo } from '../types';
+
 export class SfntParseError extends Error {}
 
 export interface CmapTableInfo {
@@ -398,4 +400,37 @@ function mergeSegments(segments: number[][]): [number, number][] {
     }
   }
   return merged;
+}
+
+/**
+ * 上传字体文件的统一解析入口（字体条目上传与「字体版本升级影响评估」共用）：
+ * - 校验扩展名（.ttf/.otf）与文件大小；
+ * - 浏览器端读取 ArrayBuffer 后复用 parseSfntFont 解析 cmap；
+ * - 要求 cmap 至少映射一个非 0 glyph。
+ * 任何不满足条件的情况抛出 SfntParseError，由调用方就地展示、隔离错误；
+ * 文件二进制仅在本次读取期间存在，不缓存、不上传。
+ */
+export async function parseSfntFile(file: File, maxBytes: number): Promise<FontFileInfo> {
+  const lower = file.name.toLowerCase();
+  if (!lower.endsWith('.ttf') && !lower.endsWith('.otf')) {
+    throw new SfntParseError('仅支持 .ttf / .otf 字体文件');
+  }
+  if (file.size > maxBytes) {
+    const limitMb = Math.round(maxBytes / 1024 / 1024);
+    throw new SfntParseError(`文件过大（${file.size} 字节），上限 ${limitMb} MB`);
+  }
+  const buffer = await file.arrayBuffer();
+  const result = parseSfntFont(buffer);
+  if (result.ranges.length === 0) {
+    throw new SfntParseError('cmap 未映射任何非 0 glyph（实测覆盖为空）');
+  }
+  return {
+    name: file.name,
+    size: file.size,
+    ranges: result.ranges,
+    codepointCount: result.codepointCount,
+    cmapFormats: result.cmap.formats,
+    sfntVersion: formatSfntTag(result.sfntVersion),
+    parsedAt: new Date().toISOString(),
+  };
 }

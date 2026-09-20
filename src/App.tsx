@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import type {
   AuditMode,
-  FontFileInfo,
   FontSpec,
   ParsedFont,
   ScenarioClusterAudit,
@@ -29,8 +28,9 @@ import {
   sampleScenarios,
   scenarioDisplayName,
 } from './lib/scenarios';
-import { formatSfntTag, parseSfntFont, SfntParseError } from './lib/sfnt';
+import { parseSfntFile } from './lib/sfnt';
 import FontEditor from './components/FontEditor';
+import FontUpgradePanel from './components/FontUpgradePanel';
 import ScenarioEditor from './components/ScenarioEditor';
 import ResultsPanel from './components/ResultsPanel';
 import SetResultsPanel, { type ScenarioView } from './components/SetResultsPanel';
@@ -395,54 +395,22 @@ export default function App() {
 
   // ---- 本地字体文件：浏览器内读取 + 解析 cmap，绝不离开当前页面 ----
   const uploadFontFile = (id: string, file: File) => {
-    const lower = file.name.toLowerCase();
-    if (!lower.endsWith('.ttf') && !lower.endsWith('.otf')) {
-      setFileErrors((m) => ({ ...m, [id]: '仅支持 .ttf / .otf 字体文件' }));
-      return;
-    }
-    if (file.size > MAX_FONT_BYTES) {
-      setFileErrors((m) => ({ ...m, [id]: `文件过大（${file.size} 字节），上限 20 MB` }));
-      return;
-    }
     setParsingIds((s) => new Set(s).add(id));
     // File 只在本次读取期间存在；ArrayBuffer 解析完即可被 GC，不写入任何存储
-    file
-      .arrayBuffer()
-      .then((buffer) => {
-        try {
-          const result = parseSfntFont(buffer);
-          if (result.ranges.length === 0) {
-            throw new SfntParseError('cmap 未映射任何非 0 glyph（实测覆盖为空）');
-          }
-          const info: FontFileInfo = {
-            name: file.name,
-            size: file.size,
-            ranges: result.ranges,
-            codepointCount: result.codepointCount,
-            cmapFormats: result.cmap.formats,
-            sfntVersion: formatSfntTag(result.sfntVersion),
-            parsedAt: new Date().toISOString(),
-          };
-          setFonts((fs) => fs.map((f) => (f.id === id ? { ...f, file: info } : f)));
-          setFileErrors((m) => {
-            const rest = { ...m };
-            delete rest[id];
-            return rest;
-          });
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : String(e);
-          setFileErrors((m) => ({ ...m, [id]: msg }));
-        } finally {
-          setParsingIds((s) => {
-            const next = new Set(s);
-            next.delete(id);
-            return next;
-          });
-        }
+    parseSfntFile(file, MAX_FONT_BYTES)
+      .then((info) => {
+        setFonts((fs) => fs.map((f) => (f.id === id ? { ...f, file: info } : f)));
+        setFileErrors((m) => {
+          const rest = { ...m };
+          delete rest[id];
+          return rest;
+        });
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         const msg = e instanceof Error ? e.message : String(e);
-        setFileErrors((m) => ({ ...m, [id]: `文件读取失败：${msg}` }));
+        setFileErrors((m) => ({ ...m, [id]: msg }));
+      })
+      .finally(() => {
         setParsingIds((s) => {
           const next = new Set(s);
           next.delete(id);
@@ -549,6 +517,15 @@ export default function App() {
             onToggleMeasured={setUseMeasured}
             onUploadFile={uploadFontFile}
             onClearFile={clearFontFile}
+          />
+
+          <FontUpgradePanel
+            fonts={fonts}
+            groups={solveGroups}
+            scenarios={patchScenarios}
+            mode={mode}
+            ignoreFormatCodepoints={ignoreFormat}
+            maxFileBytes={MAX_FONT_BYTES}
           />
 
           <h2>
